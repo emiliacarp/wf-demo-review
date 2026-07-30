@@ -1,0 +1,249 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex,nofollow" />
+<title>White Flag — Review</title>
+<style>
+  :root{
+    --bg:#0b0f16; --panel:#141a24; --panel2:#1b2330; --line:#27313f;
+    --text:#e8ecf1; --muted:#8891a3; --accent:#e4b662; --accent2:#7dbee8;
+    --flag:#ffffff; --ok:#59d38f; --danger:#ff6b6b;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.5}
+  .wrap{max-width:960px;margin:0 auto;padding:18px 16px 120px}
+  header{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;justify-content:space-between;
+    padding-bottom:14px;border-bottom:1px solid var(--line)}
+  .brand{display:flex;align-items:baseline;gap:11px}
+  .flag{font-size:20px;filter:grayscale(1) brightness(2)}
+  h1{margin:0;font-size:22px;font-weight:800;letter-spacing:-.02em}
+  .sub{color:var(--muted);font-size:12px;letter-spacing:.07em;text-transform:uppercase}
+  .who{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
+  .who input{background:var(--panel);border:1px solid var(--line);color:var(--text);
+    border-radius:8px;padding:6px 10px;font:inherit;width:130px}
+  .who input:focus-visible{outline:2px solid var(--accent2);outline-offset:1px}
+
+  .videoCard{background:var(--panel);border:1px solid var(--line);border-radius:10px;
+    padding:12px;margin-top:16px}
+  video{width:100%;max-height:64vh;background:#000;border-radius:6px;display:block}
+  .transport{display:flex;align-items:center;gap:12px;margin-top:12px;flex-wrap:wrap}
+  .tc{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:20px;color:var(--accent);
+    background:#0b0f16;border:1px solid var(--line);border-radius:8px;padding:7px 12px;min-width:92px;text-align:center}
+  .addBtn{flex:1 1 auto;display:flex;align-items:center;justify-content:center;gap:10px;
+    background:var(--flag);color:#0a0d13;font-weight:800;font-size:15px;border:none;border-radius:9px;
+    padding:12px 16px;cursor:pointer}
+  .addBtn:active{transform:translateY(1px)}
+  .kbd{font-family:var(--mono);font-size:11px;background:#0a0d13;color:#cbd3e1;border-radius:5px;padding:2px 6px}
+
+  /* note form */
+  .noteForm{background:var(--panel);border:1px solid var(--accent);border-radius:10px;padding:14px;
+    margin-top:14px;display:none;gap:12px;align-items:flex-start}
+  .noteForm.on{display:flex}
+  .thumbPrev{width:132px;height:74px;background:#000 center/cover;border:1px solid var(--line);
+    border-radius:5px;flex:0 0 auto}
+  .formMain{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:9px}
+  .formMain .at{font-family:var(--mono);color:var(--accent2);font-size:13px}
+  .cats{display:flex;gap:6px;flex-wrap:wrap}
+  .cat{background:#0b0f16;border:1px solid var(--line);color:var(--muted);border-radius:20px;
+    padding:5px 12px;font-size:13px;cursor:pointer}
+  .cat.sel{background:var(--accent2);color:#04121f;border-color:var(--accent2);font-weight:700}
+  .noteForm textarea{background:#0b0f16;border:1px solid var(--line);color:var(--text);font:inherit;
+    font-size:14.5px;border-radius:8px;padding:9px 10px;resize:vertical;min-height:58px;width:100%}
+  .noteForm textarea:focus-visible{outline:2px solid var(--accent2);outline-offset:1px}
+  .formBtns{display:flex;gap:8px}
+  button.primary{background:var(--accent);color:#1a1409;border:1px solid var(--accent);font-weight:700;
+    border-radius:8px;padding:9px 15px;cursor:pointer;font:inherit}
+  button.ghost{background:transparent;border:1px solid var(--line);color:var(--muted);border-radius:8px;
+    padding:9px 15px;cursor:pointer;font:inherit}
+  button:hover{border-color:var(--accent)}
+
+  .notesHead{display:flex;align-items:center;justify-content:space-between;margin:22px 0 4px}
+  .notesHead h2{margin:0;font-size:14px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+  .count{font-family:var(--mono);font-size:13px;color:var(--accent2);border:1px solid var(--line);
+    border-radius:20px;padding:3px 11px}
+  .empty{color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px;
+    padding:20px;text-align:center;line-height:1.6}
+  .note{display:grid;grid-template-columns:auto 1fr auto;gap:12px;background:var(--panel);
+    border:1px solid var(--line);border-radius:10px;padding:11px;margin-top:9px;align-items:start}
+  .note .th{width:104px;height:59px;background:#000 center/cover;border:1px solid var(--line);
+    border-radius:5px;cursor:pointer;flex:0 0 auto}
+  .note h4{margin:0 0 4px;font-size:13px;font-weight:600;display:flex;gap:8px;flex-wrap:wrap;align-items:baseline}
+  .note h4 .c{color:var(--accent)}
+  .note h4 .t{color:var(--accent2);font-family:var(--mono);font-variant-numeric:tabular-nums;cursor:pointer}
+  .note h4 .m{color:var(--muted);font-weight:400;font-size:12px}
+  .note p{margin:0;font-size:14.5px;white-space:pre-wrap;word-break:break-word}
+  .note .del{background:transparent;border:none;color:var(--muted);font-size:18px;cursor:pointer;padding:2px 6px}
+  .note .del:hover{color:var(--danger)}
+
+  .bar{position:fixed;left:0;right:0;bottom:0;background:linear-gradient(180deg,rgba(11,15,22,0),var(--bg) 36%);
+    padding:18px 16px 16px}
+  .barIn{max-width:960px;margin:0 auto;display:flex;gap:10px;align-items:center;flex-wrap:wrap;
+    background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:11px 13px}
+  .barIn .hint{flex:1 1 220px;color:var(--muted);font-size:13px}
+  .barIn .hint b{color:var(--text)}
+  .exportBox{width:100%;margin-top:10px;background:#0a0d13;border:1px solid var(--line);color:#cbd3e1;
+    font-family:var(--mono);font-size:12px;border-radius:9px;padding:11px;min-height:80px;resize:vertical;line-height:1.6}
+  .toast{position:fixed;bottom:92px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--ok);
+    color:#04160c;font-weight:700;font-size:14px;padding:9px 16px;border-radius:9px;opacity:0;pointer-events:none;
+    transition:.24s;z-index:9}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  details.help{margin-top:14px;border:1px solid var(--line);border-radius:10px;background:var(--panel)}
+  details.help summary{cursor:pointer;padding:11px 13px;font-weight:700;font-size:14px}
+  details.help .b{padding:0 14px 13px;color:var(--muted);font-size:13.5px;line-height:1.7}
+  details.help b{color:var(--text)}
+  @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+  @media(max-width:560px){.noteForm{flex-direction:column}.thumbPrev{width:100%;height:auto;aspect-ratio:16/9}}
+</style></head><body>
+<div class="wrap">
+  <header>
+    <div class="brand"><span class="flag">🏳️</span>
+      <div><h1>White&nbsp;Flag — Review</h1>
+      <div class="sub">Closer · demo v1 (lip-sync) · Jul 2026</div></div>
+    </div>
+    <div class="who"><span>Reviewer</span><input id="reviewer" value="Craig" spellcheck="false" /></div>
+  </header>
+
+  <div class="videoCard">
+    <video id="v" src="white-flag-review.mp4" preload="metadata" controls playsinline crossorigin="anonymous"></video>
+    <div class="transport">
+      <div class="tc" id="tc">0:00.0</div>
+      <button class="addBtn" id="add">＋ Note at this moment <span class="kbd">N</span></button>
+    </div>
+
+    <div class="noteForm" id="form">
+      <div class="thumbPrev" id="thumbPrev"></div>
+      <div class="formMain">
+        <div class="at" id="formAt">0:00.0</div>
+        <div class="cats" id="cats"></div>
+        <textarea id="text" placeholder="What did you notice here?"></textarea>
+        <div class="formBtns">
+          <button class="primary" id="save">Save note</button>
+          <button class="ghost" id="cancel">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="notesHead"><h2>Notes</h2><span class="count" id="count">0</span></div>
+  <div id="list"><div class="empty" id="empty">No notes yet. Play the video and press
+    <b>Note at this moment</b> (or the <b>N</b> key) whenever something catches your eye —
+    the timecode and a thumbnail are captured for you.</div></div>
+
+  <details class="help"><summary>How this works</summary><div class="b">
+    Watch the video. Any moment worth a comment, hit <b>Note at this moment</b> — it grabs the
+    timecode + a still and pauses so you can type, and tag it (<b>Regen</b>, <b>Swap</b>,
+    <b>Trim</b>, <b>Kill</b>, <b>Insert</b>, <b>Nice</b>). Click a timecode to jump back.
+    When you're done, hit <b>Copy all notes</b> and paste them into your reply to Emilia —
+    they come straight back to the edit. Your notes are saved in this browser as you go.
+  </div></details>
+</div>
+
+<div class="bar"><div class="barIn">
+  <div class="hint"><b>Done?</b> Copy your notes and send them to Emilia.</div>
+  <button class="ghost" id="clear">Clear</button>
+  <button class="ghost" id="download">Download .txt</button>
+  <button class="primary" id="copy">Copy all notes</button>
+  <textarea class="exportBox" id="export" readonly spellcheck="false" aria-label="Notes to copy"></textarea>
+</div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  var VERSION="White Flag — Closer demo v1 (lip-sync) · 2026-07-29";
+  var VIDEO="white-flag-review.mp4", LSKEY="wf-review-v1";
+  var CATS=["Regen","Swap","Trim","Kill","Insert","Nice"];
+  var v=document.getElementById('v'),tc=document.getElementById('tc'),form=document.getElementById('form'),
+      thumbPrev=document.getElementById('thumbPrev'),formAt=document.getElementById('formAt'),
+      catsEl=document.getElementById('cats'),textEl=document.getElementById('text'),
+      list=document.getElementById('list'),empty=document.getElementById('empty'),
+      countEl=document.getElementById('count'),exportBox=document.getElementById('export'),
+      reviewer=document.getElementById('reviewer'),toast=document.getElementById('toast');
+  var notes=[],seq=0,pendT=0,pendThumb="",pendCat="Regen";
+
+  try{var s=JSON.parse(localStorage.getItem(LSKEY)||"null");if(s){notes=s.notes||[];seq=s.seq||notes.length;
+    if(s.reviewer)reviewer.value=s.reviewer;}}catch(e){}
+  function save(){try{localStorage.setItem(LSKEY,JSON.stringify({notes:notes,seq:seq,reviewer:reviewer.value}));}catch(e){}}
+  function fmt(t){if(!isFinite(t))t=0;var m=Math.floor(t/60),s=t-m*60;return m+":"+(s<10?"0":"")+s.toFixed(1);}
+
+  v.addEventListener('timeupdate',function(){tc.textContent=fmt(v.currentTime);});
+
+  function grabThumb(){
+    try{var c=document.createElement('canvas');c.width=224;c.height=126;
+      c.getContext('2d').drawImage(v,0,0,c.width,c.height);return c.toDataURL('image/jpeg',0.7);}
+    catch(e){return "";}   // cross-origin frames may be blocked; note still works without a thumb
+  }
+  // category chips
+  CATS.forEach(function(c){var b=document.createElement('button');b.className='cat'+(c==pendCat?' sel':'');
+    b.textContent=c;b.type='button';b.addEventListener('click',function(){pendCat=c;
+      catsEl.querySelectorAll('.cat').forEach(function(x){x.classList.toggle('sel',x.textContent==c);});});
+    catsEl.appendChild(b);});
+
+  function openForm(){
+    v.pause();pendT=+v.currentTime.toFixed(1);pendThumb=grabThumb();pendCat="Regen";
+    formAt.textContent="at "+fmt(pendT);textEl.value="";
+    thumbPrev.style.backgroundImage=pendThumb?("url("+pendThumb+")"):"none";
+    catsEl.querySelectorAll('.cat').forEach(function(x){x.classList.toggle('sel',x.textContent=="Regen");});
+    form.classList.add('on');textEl.focus();
+  }
+  document.getElementById('add').addEventListener('click',openForm);
+  document.getElementById('cancel').addEventListener('click',function(){form.classList.remove('on');});
+  document.getElementById('save').addEventListener('click',function(){
+    notes.push({id:++seq,t:pendT,text:textEl.value.trim(),cat:pendCat,thumb:pendThumb});
+    form.classList.remove('on');render();
+  });
+  document.addEventListener('keydown',function(e){
+    var tag=(e.target.tagName||"").toLowerCase();
+    if((e.key==='n'||e.key==='N')&&tag!=='textarea'&&tag!=='input'){e.preventDefault();openForm();}
+    if(e.key==='Escape')form.classList.remove('on');
+  });
+
+  function render(){
+    notes.sort(function(a,b){return a.t-b.t;});
+    empty.style.display=notes.length?"none":"block";
+    list.querySelectorAll('.note').forEach(function(el){el.remove();});
+    notes.forEach(function(n){
+      var row=document.createElement('div');row.className='note';
+      var th=document.createElement('div');th.className='th';
+      if(n.thumb)th.style.backgroundImage="url("+n.thumb+")";th.title="Jump to "+fmt(n.t);
+      th.addEventListener('click',function(){v.currentTime=n.t;v.play().catch(function(){});});
+      var mid=document.createElement('div');
+      var h=document.createElement('h4');
+      h.innerHTML='<span class="c">'+n.cat+'</span><span class="t">'+fmt(n.t)+
+        '</span><span class="m">#'+n.id+'</span>';
+      h.querySelector('.t').addEventListener('click',function(){v.currentTime=n.t;v.play().catch(function(){});});
+      var p=document.createElement('p');p.textContent=n.text||"(no comment written)";
+      mid.appendChild(h);mid.appendChild(p);
+      var del=document.createElement('button');del.className='del';del.textContent='×';del.title="Delete";
+      del.addEventListener('click',function(){notes=notes.filter(function(x){return x.id!==n.id;});render();});
+      row.appendChild(th);row.appendChild(mid);row.appendChild(del);list.appendChild(row);
+    });
+    countEl.textContent=notes.length;buildExport();save();
+  }
+  function buildExport(){
+    var L=["WHITE FLAG — client review notes","Reviewer: "+(reviewer.value||"—"),
+      "Video: "+VIDEO,"Version: "+VERSION,"——————————————"];
+    if(!notes.length)L.push("(no notes yet)");
+    notes.slice().sort(function(a,b){return a.t-b.t;}).forEach(function(n){
+      L.push(fmt(n.t)+"  ["+n.cat+"]  "+(n.text||"(no comment written)"));});
+    exportBox.value=L.join("\n");
+  }
+  reviewer.addEventListener('input',function(){buildExport();save();});
+  function flash(m){toast.textContent=m;toast.classList.add('show');setTimeout(function(){toast.classList.remove('show');},1600);}
+  document.getElementById('copy').addEventListener('click',function(){
+    buildExport();exportBox.focus();exportBox.select();var ok=false;try{ok=document.execCommand('copy');}catch(e){}
+    if(navigator.clipboard)navigator.clipboard.writeText(exportBox.value).then(function(){flash("Copied — paste to Emilia");},
+      function(){flash(ok?"Copied — paste to Emilia":"Select the box below & copy");});
+    else flash(ok?"Copied — paste to Emilia":"Select the box below & copy");
+  });
+  document.getElementById('download').addEventListener('click',function(){buildExport();
+    var b=new Blob([exportBox.value],{type:"text/plain"});var a=document.createElement('a');
+    a.href=URL.createObjectURL(b);a.download="WhiteFlag-notes-"+(reviewer.value||"review").replace(/\s+/g,"")+".txt";
+    document.body.appendChild(a);a.click();a.remove();flash("Downloaded");});
+  document.getElementById('clear').addEventListener('click',function(){
+    if(notes.length&&!confirm("Clear all notes?"))return;notes=[];seq=0;render();});
+  render();
+})();
+</script>
+</body></html>
