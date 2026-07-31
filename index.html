@@ -152,7 +152,12 @@
 <script>
 (function(){
   var VERSION="White Flag — Midnight City demo v17 · 2026-07-30";
-  var VIDEO="white-flag-review.mp4", LSKEY="wf-review-v1";
+  // notes are keyed to the CURRENT version so a new cut always starts with a CLEAN slate —
+  // prevents re-exporting stale notes from a previous version (fixed 2026-07-30).
+  var VIDEO="white-flag-review.mp4", LSKEY="wf-review::"+VERSION;
+  try{ // one-time cleanup of the old shared key so its stale notes can never resurface
+    if(localStorage.getItem("wf-review-v1")) localStorage.removeItem("wf-review-v1");
+  }catch(e){}
   var CATS=["Regen","Swap","Trim","Kill","Insert","Nice"];
   var v=document.getElementById('v'),tc=document.getElementById('tc'),form=document.getElementById('form'),
       thumbPrev=document.getElementById('thumbPrev'),formAt=document.getElementById('formAt'),
